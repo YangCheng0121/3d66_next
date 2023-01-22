@@ -61,7 +61,7 @@ export default function Index(props: any) {
         <link rel="icon" href="/favicon.ico"/>
       </Head>
       <header className={styles.header}>
-        <Image src={require('@/../../public/img/header.png')} alt="头部"></Image>
+        <Image src="/imgs/header.png" alt="头部" fill></Image>
       </header>
       <main className={styles.main}>
         <div className={styles.list_con}>
