@@ -7,32 +7,22 @@ import {getList} from "@/api";
 import 'react-virtualized/styles.css';
 
 import {Grid, WindowScroller} from 'react-virtualized';
-import {useEffect, useRef, useState} from "react";
+import {useState} from "react";
+import Link from "next/link";
 
-export default function Home(props: any) {
+// TODO 生产要使用React17
+export default function Index(props: any) {
   const [data, setData] = useState<any>([])
-  console.log(props)
-  const {list = []} = props.data
-  //
   for (let i = 0; i < props.data.list.length; i += 5) {
     data.push(props.data.list.slice(i, i + 5))
   }
-  //
-  // useEffect(() => {
-  //   getList({page: ref.current.page}).then(res => {
-  //     const result = []
-  //     for (let i = 0; i < res.data.list.length; i += 5) {
-  //       result.push(res.data.list.slice(i, i + 5))
-  //     }
-  //     setData(result)
-  //   })
-  // }, [])
+  console.log(data)
 
   const cellRenderer = ({columnIndex, key, rowIndex, style}: any) => {
     const item = data[rowIndex][columnIndex]
 
     return (
-      <div key={key} style={style}>
+      <Link href={`/detail/${item.fa_img_id}`} key={key} style={style} target="_blank">
         <div key={item.detail_url_alias} className={styles.list_item}>
           <Image width={241} height={161} src={item.thuimg324} alt={item.res_name}/>
           <p className={styles.list_info}>
@@ -40,8 +30,26 @@ export default function Home(props: any) {
             <span>{item.res_price}下载币</span>
           </p>
         </div>
-      </div>
+      </Link>
     );
+  }
+
+  let first = false
+  const onScroll = (props: any) => {
+    const {scrollHeight, clientHeight, scrollTop} = props
+    if (scrollTop + clientHeight > scrollHeight && !first) {
+      first = true
+      setData((preList: any) => {
+        first = false
+        return [...preList, ...preList]
+      })
+      // getList({
+      //   page: 2
+      // }).then(res => {
+      //   first = false
+      // })
+    }
+
   }
 
   return (
@@ -57,19 +65,6 @@ export default function Home(props: any) {
       </header>
       <main className={styles.main}>
         <div className={styles.list_con}>
-          {/*<div className={styles.list_wrap}>
-            {list.map((item: any) => {
-              return (
-                <div key={item.detail_url_alias} className={styles.list_item}>
-                  <Image width={241} height={161}  src={item.thuimg324} alt={item.res_name}/>
-                  <p className={styles.list_info}>
-                    <span>{item.res_name}</span>
-                    <span>{item.res_price}下载币</span>
-                  </p>
-                </div>
-              )
-            })}
-          </div>*/}
           {
             data.length &&
             <WindowScroller>
@@ -77,7 +72,10 @@ export default function Home(props: any) {
                 <Grid
                   autoHeight
                   isScrolling={isScrolling}
-                  onScroll={onChildScroll}
+                  onScroll={(props: any) => {
+                    onChildScroll(props)
+                    onScroll(props)
+                  }}
                   scrollTop={scrollTop}
                   cellRenderer={cellRenderer}
                   columnCount={data[0].length}
@@ -97,7 +95,9 @@ export default function Home(props: any) {
 }
 
 export const getServerSideProps = async (ctx: any) => {
-  const result = await getList()
+  const result = await getList({
+    page: 1,
+  })
 
   return {
     props: {
