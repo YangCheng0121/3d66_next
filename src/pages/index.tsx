@@ -6,9 +6,19 @@ import {getList} from "@/api";
 // 引入 长列表优化组件
 import 'react-virtualized/styles.css';
 
-import {Grid, WindowScroller} from 'react-virtualized';
+// import {Grid, WindowScroller} from 'react-virtualized';
 import React, {useState} from "react";
 import Link from "next/link";
+
+import {
+  Grid as _Grid,
+  WindowScroller as _WindowScroller,
+  WindowScrollerProps,
+  GridProps
+} from "react-virtualized";
+
+const WindowScroller = _WindowScroller as unknown as React.FC<WindowScrollerProps>;
+const Grid = _Grid as unknown as React.FC<GridProps>;
 
 // TODO 生产要使用React17
 export default function Index(props: any) {
