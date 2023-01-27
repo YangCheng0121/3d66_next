@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from './index.module.scss'
 import {getList} from "@/api";
+import Header from "@/components/Header";
 
 // 引入 长列表优化组件
 import 'react-virtualized/styles.css';
@@ -70,9 +71,7 @@ export default function Index(props: any) {
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="icon" href="/favicon.ico"/>
       </Head>
-      <header className={styles.header}>
-        <Image src="/imgs/header.png" alt="头部" fill></Image>
-      </header>
+      <Header></Header>
       <main className={styles.main}>
         <div className={styles.list_con}>
           {
